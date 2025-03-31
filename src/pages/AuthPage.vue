@@ -1,29 +1,39 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { UsersService } from "../api";
+import type { IUserResponse } from "../types/UserTypes";
+import { useUserStore } from "../stores/user-store";
+import { useRouter } from "vue-router";
 
-interface IUser {
+export interface IUser {
   username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
 }
 
+const userStore = useUserStore();
+const router = useRouter()
+
 const form = ref<IUser>({
-  username: "asdasd",
-  firstName: "asdasd",
-  lastName: "asdasd",
-  email: "asdasd@gmail.com",
+  username: "",
 });
 
-onMounted(async () => {
+const handleUserAuth = async () => {
   try {
-    const data = await UsersService.fetchUserAuth();
-    console.log("User data:", data);
+    const data: {data: IUserResponse} = await UsersService.fetchUserAuth(form.value);
+    if (data) {
+      localStorage.setItem("hash", data.data.hash);
+      localStorage.setItem("username", data.data.username);
+      localStorage.setItem("password", data.data.spoonacularPassword);
+      userStore.authUserData = {
+        hash: data.data.hash,
+        username: data.data.username,
+        password: data.data.spoonacularPassword,
+      }
+      router.push("/profile");
+    }
   } catch (e) {
     console.error("Error fetching users:", e);
   }
-});
+};
 </script>
 
 <template>
@@ -33,13 +43,9 @@ onMounted(async () => {
 
       <el-input v-model="form.username" placeholder="Username" />
 
-      <el-input v-model="form.firstName" placeholder="FirstName" />
-
-      <el-input v-model="form.lastName" placeholder="LastName" />
-
-      <el-input v-model="form.email" placeholder="Email" />
-
-      <el-button class="mt-10" type="primary">Войти</el-button>
+      <el-button @click="handleUserAuth" class="mt-10" type="primary"
+        >Войти</el-button
+      >
     </el-form>
   </div>
 </template>

@@ -1,0 +1,88 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { BasketService } from "../../api";
+import { useUserStore } from "../../stores/user-store";
+import { useBasketStore } from "../../stores/basket-store";
+
+const basketStore = useBasketStore();
+const userStore = useUserStore();
+const isModalOpen = ref(false);
+const isCreateList = ref("Список");
+
+const selectList = ref("");
+const product = ref({
+  name: "",
+  count: 0,
+})
+
+const handleCreateProductOrList = async () => {
+
+  if (product.value.count === 0 || !product.value.name.trim() || !selectList.value.trim()) return;
+
+  await BasketService.fetchCreateShoppingOrProduct(
+    userStore.authUserData.hash,
+    userStore.authUserData.username,
+    {
+      item: `${product.value.count} package ${product.value.name}`,
+      aisle: selectList.value,
+      parse: true,
+    }
+  );
+  selectList.value = "";
+  product.value.name = "";
+  product.value.count = 0;
+  basketStore.fetchGetShoppngList();
+  isModalOpen.value = false;
+};
+</script>
+
+<template>
+  <div class="pb-5 pt-5 sticky top-0 w-[100%] flex justify-center bg-white border-b-2 border-gray-200 z-10">
+    <el-button type="success" size="large" @click="isModalOpen = true">Добавить товар</el-button>
+  </div>
+  <el-dialog v-model="isModalOpen" align-center width="auto">
+    <div class="flex flex-col gap-5 p-3 items-center">
+      <h3 class="mb-3 text-2xl font-bold">
+        Добавление товара или списка покупок
+      </h3>
+      <div class="w-[80%]">
+        <div>
+          <p class="mb-3 text-gray-400 font-bold">
+            Выберите список или создайте новый
+          </p>
+          <div>
+            <el-radio-group
+              v-model="isCreateList"
+              @change="isCreateList = $event.target.checked"
+            >
+              <el-radio label="Список">Список</el-radio>
+              <el-radio label="Создать новый">Создать новый</el-radio>
+            </el-radio-group>
+            <el-input
+              v-if="isCreateList === 'Создать новый'"
+              v-model="selectList"
+              placeholder="Введите название нового листа"
+            ></el-input>
+            <el-select v-else v-model="selectList">
+              <el-option
+                v-for="list in basketStore.shoppingList"
+                :key="list.aisle"
+                :label="list.aisle"
+                :value="list.aisle"
+              ></el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 mt-3 text-gray-400 font-bold">
+          <p class="">Введите название продукта</p>
+          <el-input v-model="product.name"></el-input>
+          <p class="">Сколько упаковок?</p>
+          <el-slider v-model="product.count" show-input />
+        </div>
+        <div class="flex justify-center mt-5">
+          <el-button type="success" size="large" @click="handleCreateProductOrList()">Добавить</el-button>
+        </div>
+      </div>
+    </div>
+  </el-dialog>
+</template>

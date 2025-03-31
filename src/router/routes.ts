@@ -1,34 +1,44 @@
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
-    {
-        path: '/',
-        component: () => import('../pages/HomePage.vue'),
+  {
+    path: "/",
+    component: () => import("../pages/HomePage.vue"),
+  },
+  {
+    path: "/recipes",
+    component: () => import("../pages/RecipeListPage.vue"),
+  },
+  {
+    path: "/recipes/:id",
+    component: () => import("../pages/RecipeDetailPage.vue"),
+  },
+  {
+    path: "/basket",
+    component: () => import("../pages/BasketPage.vue"),
+    meta: {
+      requiresAuth: true, // Мета-поле для указания, что маршрут требует авторизации
     },
-    {
-        path: '/recipes',
-        component: () => import('../pages/RecipeListPage.vue'),
+  },
+  {
+    path: "/ingridients/:id",
+    component: () => import("../pages/IngridientsDetailPage.vue"),
+  },
+  {
+    path: "/profile",
+    component: () => import("../pages/ProfilePage.vue"),
+    meta: {
+      requiresAuth: true, // Мета-поле для указания, что маршрут требует авторизации
     },
-    {
-        path: '/recipes/:id',
-        component: () => import('../pages/RecipeDetailPage.vue'),
-    },
-    {
-        path: '/ingridients',
-        component: () => import('../pages/IngridientsListPage.vue'),
-    },
-    {
-        path: '/ingridients/:id',
-        component: () => import('../pages/IngridientsDetailPage.vue'),
-    },
-    {
-        path: '/auth',
-        component: () => import('../pages/AuthPage.vue'),
-    },
-    {
-        path: '/:pathMatch(.*)*',
-        component: () => import('../pages/NotFound404.vue'),
-    },
-]
+  },
+  {
+    path: "/auth",
+    component: () => import("../pages/AuthPage.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("../pages/NotFound404.vue"),
+  },
+];
 
-export default routes
+export default routes;
