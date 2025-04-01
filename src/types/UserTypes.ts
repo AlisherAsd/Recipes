@@ -14,8 +14,6 @@ export interface IUser {
   username: string;
   /** Хэш токена */
   hash: string;
-  /** Пароль */
-  password: string;
 }
 
 

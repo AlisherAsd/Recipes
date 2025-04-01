@@ -2,6 +2,8 @@
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+// Обработка возврата на предыдущую страницу
 const HandleGoBack = () => {
   router.back();
 };

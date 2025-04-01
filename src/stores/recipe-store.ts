@@ -9,29 +9,35 @@ import type {
   ISummeryDescription,
 } from "../types/RecipeType";
 
+// Хранилище рецептов
 export const useRecipeStore = defineStore("recipe-store", () => {
+  // Список рецептов
   const recipeList = ref<IRecipeResponse>({
     results: [],
     offset: 0,
     number: 0,
     totalResults: 0,
   });
-
+  // Параметры запроса
   const params = ref<IRecipeParams>({
     query: "",
     number: 4,
     offset: 0,
     diet: "",
   });
-
+  // Выбранный рецепт
   const selectedRecipe = ref<IRecipeInformationById | null>(null);
+  // Похожие рецепты
   const similarSelectedRecipe = ref<IRecipeSimilar[] | null>(null);
+  // Краткая информация о рецепте
   const summaryRecipe = ref({
     title: "",
     description: "",
-    isOpenDrawer: false
+    isOpenDrawer: false,
   });
+  // Ошибка
   const error = ref<string | null>(null);
+  // Загрузка
   const isLoading = ref<boolean>(false);
 
   // Функция для загрузки рецептов
@@ -66,12 +72,15 @@ export const useRecipeStore = defineStore("recipe-store", () => {
     params.value = { ...params.value, ...newParams };
   }
 
+  // Функция для сброса параметров запроса
   function resetParams() {
     params.value = {
       number: 4,
       offset: 0,
       diet: "",
       query: "",
+      cuisine: "",
+      type: ""
     };
   }
 
@@ -104,7 +113,7 @@ export const useRecipeStore = defineStore("recipe-store", () => {
     try {
       const { data }: { data: IRecipeSimilar[] } =
         await RecipeService.fetchGetRecipeSimilar(params.value, id);
-        similarSelectedRecipe.value = data;
+      similarSelectedRecipe.value = data;
     } catch (err) {
       console.error(err);
       error.value = "Ошибка при загрузке похожих рецептов";
@@ -113,20 +122,19 @@ export const useRecipeStore = defineStore("recipe-store", () => {
     }
   }
 
+  // Функция для загрузки краткой информации о рецепте
   async function fetchRecipeSummary(id: number) {
     isLoading.value = true;
     error.value = null;
     try {
-      const { data }: { data: ISummeryDescription } = await RecipeService.fetchGetRecipeSummary(
-        id
-      );
+      const { data }: { data: ISummeryDescription } =
+        await RecipeService.fetchGetRecipeSummary(id);
       summaryRecipe.value.description = data.summary;
       summaryRecipe.value.title = data.title;
       summaryRecipe.value.isOpenDrawer = true;
     } catch (e) {
       error.value = "Ошибка при получени кратких данных о рецепте";
-    }
-    finally {
+    } finally {
       isLoading.value = false;
     }
   }
@@ -145,6 +153,6 @@ export const useRecipeStore = defineStore("recipe-store", () => {
     fetchRecipeSimilar,
     resetParams,
     fetchRecipeSummary,
-    summaryRecipe
+    summaryRecipe,
   };
 });

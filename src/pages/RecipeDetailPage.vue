@@ -2,24 +2,29 @@
 import { onMounted } from "vue";
 import { useRecipeStore } from "../stores/recipe-store";
 import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 
 import IngrdientList from "../components/RecipeDetail/IngrdientList.vue";
 import InstructionsPreparation from "../components/RecipeDetail/InstructionsPreparation.vue";
 
 const recipeStore = useRecipeStore();
+const { isLoading, selectedRecipe, error } = storeToRefs(recipeStore);
 const router = useRouter();
 const route = useRoute();
 
+// Получение рецепта по id и похожих рецептов
 const getRecipeByIdAndRecipeSimilar = (id: number) => {
   recipeStore.fetchRecipeById(id);
   recipeStore.fetchRecipeSimilar(id);
 };
 
+// Обработка клика по похожему рецепту
 function handleSimilarRecipeClick(id: number) {
   router.push(`/recipes/${id}`); // Обновляем URL
   getRecipeByIdAndRecipeSimilar(id);
 }
 
+// Загрузка рецепта и похожих рецептов при монтировании компонента
 onMounted(() => {
   const id = Number(route.params.id);
   getRecipeByIdAndRecipeSimilar(id);
@@ -27,55 +32,60 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-loading="recipeStore.isLoading">
+  <div v-loading="isLoading">
     <div class="flex flex-col gap-10 items-center mt-10 p-3">
-      <div v-if="recipeStore.error">{{ recipeStore.error }}</div>
+      <!-- Ошибка -->
+      <div v-if="error">{{ error }}</div>
+      <!-- Название рецепта -->
       <p class="text-gray-400 font-bold">Рецепт</p>
       <h1 class="text-2xl font-extrabold uppercase">
-        {{ recipeStore.selectedRecipe?.title }}
+        {{ selectedRecipe?.title }}
       </h1>
       <div class="flex flex-col items-center gap-3">
+        <!-- Диеты -->
         <ul
           class="flex gap-2 text-gray-400 font-bold p-2"
-          v-if="recipeStore.selectedRecipe?.diets"
+          v-if="selectedRecipe?.diets"
         >
           <li>Диеты</li>
-          <li v-for="diet in recipeStore.selectedRecipe?.diets" :key="diet">
+          <li v-for="diet in selectedRecipe?.diets" :key="diet">
             {{ diet }}
           </li>
         </ul>
-        {{ recipeStore.selectedRecipe?.aggregateLikes }}
+        <!-- Время приготовления -->
         <p
-          v-if="recipeStore.selectedRecipe?.cookingMinutes"
+          v-if="selectedRecipe?.cookingMinutes"
           class="text-gray-400 font-bold items-center flex gap-1"
         >
           <el-icon><AlarmClock /></el-icon>
-          {{ recipeStore.selectedRecipe?.cookingMinutes }} минут
+          {{ selectedRecipe?.cookingMinutes }} минут
         </p>
+        <!-- Лайки -->
         <p
-          v-if="recipeStore.selectedRecipe?.healthScore"
+          v-if="selectedRecipe?.healthScore"
           class="text-gray-400 font-bold items-center flex gap-1"
         >
           <el-icon><Select /></el-icon>
-          {{ recipeStore.selectedRecipe?.aggregateLikes }} лайков
+          {{ selectedRecipe?.aggregateLikes }} лайков
         </p>
       </div>
+      <!-- Изображение рецепта -->
       <img
-        v-if="recipeStore.selectedRecipe?.image"
+        v-if="selectedRecipe?.image"
         class="w-[100%]"
-        :src="recipeStore.selectedRecipe?.image"
+        :src="selectedRecipe?.image"
         alt=""
       />
-
-      <div class="p-10">
+      <!-- Краткая интрукция -->
+      <div v-if="selectedRecipe?.instructions" class="p-10">
         <h2 class="my-4 font-bold text-xl">Краткая интрукция</h2>
-        <p>{{ recipeStore.selectedRecipe?.instructions }}</p>
+        <p>{{ selectedRecipe?.instructions }}</p>
       </div>
-
-      <IngrdientList :selected-recipe="recipeStore.selectedRecipe" />
-
-      <InstructionsPreparation :selected-recipe="recipeStore.selectedRecipe" />
-
+      <!-- Список ингридиентов -->
+      <IngrdientList :selected-recipe="selectedRecipe" />
+      <!-- Инструкция приготовления -->
+      <InstructionsPreparation :selected-recipe="selectedRecipe" />
+      <!-- Похожие рецепты -->  
       <div class="mb-10 text-center">
         <h1 class="mb-4 font-bold text-2xl">Похожие рецепты</h1>
         <ul class="flex flex-col gap-5">

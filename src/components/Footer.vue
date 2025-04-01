@@ -4,8 +4,12 @@
       <div class="flex flex-col md:flex-row justify-between items-center">
         <!-- Лого и описание -->
         <div class="mb-6 md:mb-0">
-          <h2 class="text-2xl font-bold mb-2">YourLogo</h2>
-          <p class="text-gray-400 max-w-md">Краткое описание компании или слоган. Здесь может быть пара слов о вашем бренде.</p>
+          <h2 class="text-2xl font-bold mb-2">
+            <router-link to="/">
+              <img src="../assets/img/logo.jpg" alt="logo" class="w-15 h-15 rounded-2xl" />
+            </router-link>
+          </h2>
+          <p class="text-gray-400 max-w-md">Сайт для поиска рецептов</p>
         </div>
 
         <!-- Навигация -->

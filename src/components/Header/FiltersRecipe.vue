@@ -9,6 +9,7 @@ import GoBackButton from "../GoBackButton.vue";
 
 const recipeStore = useRecipeStore();
 
+// Получение параметров из хранилища
 const filtersDiet = ref(recipeStore.params.diet);
 const filtersCuisine = ref(recipeStore.params.cuisine);
 const filtersType = ref(recipeStore.params.type);
@@ -50,14 +51,17 @@ const handleResetFilters = async () => {
 
 <template>
   <div
-    class="flex flex-col border-t-2 border-b-2 border-gray-300 h-24 justify-items-center"
+    class="flex flex-col border-t-2 border-b-2 border-gray-300 h-24 justify-center px-2"
   >
+    <!-- Заголовок -->
     <p class="my-3 flex justify-center">Подбор рецептов</p>
 
     <div
       class="text-white flex md:gap-4 gap-1 justify-center items-center"
     >
+      <!-- Кнопка для возврата на предыдущую страницу -->
       <GoBackButton class="hidden md:flex"/>
+      <!-- Выбор диеты -->
       <div class="w-30">
         <el-select v-model="filtersDiet" placeholder="Диеты">
           <el-option
@@ -68,6 +72,7 @@ const handleResetFilters = async () => {
           />
         </el-select>
       </div>
+      <!-- Выбор кухни -->
       <div class="w-30">
         <el-select v-model="filtersCuisine" placeholder="Кухни">
           <el-option
@@ -78,6 +83,7 @@ const handleResetFilters = async () => {
           />
         </el-select>
       </div>
+      <!-- Выбор типа блюда -->
       <div class="w-30">
         <el-select v-model="filtersType" placeholder="Блюда">
           <el-option
@@ -88,9 +94,11 @@ const handleResetFilters = async () => {
           />
         </el-select>
       </div>
+      <!-- Кнопка для применения фильтров -->
       <el-button class="z-10 md:w-30 w-20" type="primary" @click="handleFiltershRecipe"
         >Применить</el-button
       >
+      <!-- Кнопка для сброса фильтров -->
       <el-button class="!ml-0 z-10 md:w-30 w-20" @click="handleResetFilters"
         >Сбросить</el-button
       >

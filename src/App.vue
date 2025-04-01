@@ -6,20 +6,26 @@ import { useUserStore } from "./stores/user-store";
 
 const userStore = useUserStore();
 
+// Проверка на наличие токена в localStorage
 if (localStorage.getItem("hash")) {
   userStore.authUserData.hash = localStorage.getItem("hash");
   userStore.authUserData.username = localStorage.getItem("username");
-  userStore.authUserData.password = localStorage.getItem("password");
 }
 </script>
 
 <template>
-   <Header />
+  <!-- Шапка сайта -->
+  <Header />
+  <!-- Drawer для корзины -->
   <DrawerBasketList class="hidden md:flex"/>
+  <!-- Контейнер для страницы -->
   <div class="grid justify-center bg-gray-100">
-    <div class="md:w-[70vw] w-[100vw] min-h-[100vh] bg-white">
+    <!-- Контейнер для страницы -->
+    <div class="md:w-[70vw] w-[100vw] min-h-[70vh] bg-white">
+      <!-- Контейнер для страницы -->
       <router-view />
     </div>
   </div>
+  <!-- Футер сайта -->
   <Footer />
 </template>

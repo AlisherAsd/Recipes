@@ -4,14 +4,20 @@ import type { IAisle, IShoppingListResponse } from "../types/BasketType";
 import { BasketService } from "../api";
 import { useUserStore } from "./user-store";
 
+// Хранилище корзины
 export const useBasketStore = defineStore("basket-store", () => {
+  // Список покупок
   const shoppingList = ref<IAisle[] | null>(null);
+  // Открытие корзины
   const isDrawerOpen = ref(false);
 
+  // Ошибка
   const error = ref<string | null>(null);
+  // Загрузка
   const isLoading = ref<boolean>(false);
 
-  async function fetchGetShoppngList() {
+  // Получение списка покупок
+  async function fetchGetShoppingList() {
     try {
       isLoading.value = true;
       error.value = null;
@@ -28,6 +34,7 @@ export const useBasketStore = defineStore("basket-store", () => {
     }
   }
 
+  // Удаление продукта
   async function fetchDeleteItem(id: number) {
     try {
       isLoading.value = true;
@@ -45,7 +52,7 @@ export const useBasketStore = defineStore("basket-store", () => {
   }
 
   return {
-    fetchGetShoppngList,
+    fetchGetShoppingList,
     fetchDeleteItem,
     error,
     isLoading,

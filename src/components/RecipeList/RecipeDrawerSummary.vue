@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useRecipeStore } from '../../stores/recipe-store';
 
 const recipeStore = useRecipeStore();
+const { summaryRecipe } = storeToRefs(recipeStore);
 
+// Обработка закрытия drawer
 const closeDrawer = () => {
-  recipeStore.summaryRecipe.isOpenDrawer = false;
+  summaryRecipe.value.isOpenDrawer = false;
 };
 </script>
 
 <template>
+  <!-- Drawer для описания рецепта -->  
   <el-drawer 
-    v-model="recipeStore.summaryRecipe.isOpenDrawer" 
+    v-model="summaryRecipe.isOpenDrawer" 
     size="70%" 
     :with-header="false"
   >
@@ -29,9 +33,9 @@ const closeDrawer = () => {
       
       <!-- Контент -->
       <h2 class="text-xl font-bold">
-        {{ recipeStore.summaryRecipe.title }}
+        {{ summaryRecipe.title }}
       </h2>
-      <p class="my-10">{{ recipeStore.summaryRecipe.description }}</p>
+      <p class="my-10">{{ summaryRecipe.description }}</p>
     </div>
   </el-drawer>
 </template>

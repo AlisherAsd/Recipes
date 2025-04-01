@@ -16,29 +16,30 @@ const form = ref<IUser>({
   username: "",
 });
 
+// Обработка авторизации пользователя
 const handleUserAuth = async () => {
   try {
     const data: {data: IUserResponse} = await UsersService.fetchUserAuth(form.value);
     if (data) {
       localStorage.setItem("hash", data.data.hash);
       localStorage.setItem("username", data.data.username);
-      localStorage.setItem("password", data.data.spoonacularPassword);
+      // Сохранение данных пользователя в хранилище
       userStore.authUserData = {
         hash: data.data.hash,
         username: data.data.username,
-        password: data.data.spoonacularPassword,
       }
+      // Перенаправление на страницу профиля
       router.push("/profile");
     }
   } catch (e) {
-    console.error("Error fetching users:", e);
+    console.error("Ошибка при авторизации:", e);
   }
 };
 </script>
 
 <template>
-  <div class="bg-gray-600 h-[90vh] flex flex-col justify-center items-center">
-    <el-form class="w-100 bg-white flex flex-col gap-3 px-15 py-10">
+  <div class="h-[100vh] flex flex-col justify-center items-center">
+    <el-form class="w-100 bg-white flex flex-col gap-3 border border-gray-200 shadow-lg px-15 py-10 rounded-2xl">
       <h1 class="font-bold text-2xl mb-5">Войти</h1>
 
       <el-input v-model="form.username" placeholder="Username" />

@@ -2,25 +2,27 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { IUser } from "../types/UserTypes";
 
+// Хранилище пользователя
 export const useUserStore = defineStore("user-store", () => {
-    const authUserData = ref<IUser>({
-        username: "",
-        hash: "",
-        password: "",
-    });
-    const error = ref<string | null>(null);
-    const isLoading = ref<boolean>(false);
+  // Данные пользователя
+  const authUserData = ref<IUser>({
+    username: "",
+    hash: "",
+  });
+  // Ошибка
+  const error = ref<string | null>(null);
+  // Загрузка
+  const isLoading = ref<boolean>(false);
 
-    function logout() {
-        authUserData.value = {
-            username: "",
-            hash: "",
-            password: "",
-        };
-        localStorage.removeItem("username");
-        localStorage.removeItem("password");
-        localStorage.removeItem("hash");
-    }
+  // Выход из системы
+  function logout() {
+    authUserData.value = {
+      username: "",
+      hash: "",
+    };
+    localStorage.removeItem("username");
+    localStorage.removeItem("hash");
+  }
 
-    return { error, authUserData, isLoading, logout };
-})
+  return { error, authUserData, isLoading, logout };
+});

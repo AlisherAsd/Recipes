@@ -11,31 +11,38 @@ const searchQuery = ref(recipeStore.params.query);
 
 // Обработчик изменения searchQuery
 const handleSearchQueryChange = debounce(async () => {
-  // Обновляем параметры и сбрасываем offset
+  // Обновляем параметры и сбрасываем offset, сохраняя текущие значения фильтров
   recipeStore.updateParams({
     query: searchQuery.value,
     offset: 0,
+    diet: recipeStore.params.diet,
+    cuisine: recipeStore.params.cuisine,
+    type: recipeStore.params.type
   });
 
   // Загружаем новые данные
-  await recipeStore.fetchRecipe();
+  await recipeStore.resetAndFetchRecipe();
 }, 300);
 </script>
 
 <template>
-  <div class="px-10 py-20 gap-10 flex flex-col items-center">
+  <div class="px-4 py-20 gap-10 flex flex-col items-center">
+    <!-- Заголовок -->  
     <h1 class="text-3xl font-bold">Рецепты</h1>
+    <!-- Описание -->
     <div class="flex flex-col items-center">
       <p>Ищите рецепты, выбирая категорию блюда, его диету, или кухню.</p>
       <p>Просто начните писать его название и сайт подберет соответствующий.</p>
     </div>
+    <!-- Поле для ввода названия блюда -->
     <el-input
-      style="width: 400px"
+      style="width: 300px"
       size="large"
       placeholder="Введите название блюда"
       v-model="searchQuery"
       @input="handleSearchQueryChange"
     />
+    <!-- Фильтры -->
     <div class="w-[100vw] md:hidden">
       <FiltersRecipe />
     </div>
