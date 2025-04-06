@@ -51,7 +51,7 @@ const handleOffsetChange = async () => {
         <RecipeItem :item="item" />
       </div>
       <div>
-        <p v-if="true" class="p-10 text-xl font-bold text-white">
+        <p v-if="error" class="p-10 text-xl font-bold text-white">
           {{ error }}
         </p>
         <p v-else-if="noMore" class="p-10 text-xl font-bold text-white">
